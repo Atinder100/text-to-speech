@@ -1,38 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextInput from './components/TextInput';
 import VoiceSelector from './components/VoiceSelector';
 import GenerateButton from './components/GenerateButton';
 import AudioPlayer from './components/AudioPlayer';
 import ErrorMessage from './components/ErrorMessage';
+import { fetchVoices, generateSpeech } from './services/api';
 
 function App() {
   const [text, setText] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState('en-US');
-  const [selectedVoice, setSelectedVoice] = useState('English Voice 1');
   
-  // App operational state
+  
+  const [languages, setLanguages] = useState([]);
+  const [voices, setVoices] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [selectedVoice, setSelectedVoice] = useState('');
+
+  
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
 
-  // Mock data matching Section 8 requirements
-  const mockLanguages = [
-    { code: 'en-US', name: 'English (US)' },
-    { code: 'hi-IN', name: 'Hindi (India)' },
-    { code: 'es-ES', name: 'Spanish (Spain)' }
-  ];
+  
+  useEffect(() => {
+    const loadVoices = async () => {
+      try {
+        const response = await fetchVoices();
+        if (response.success && response.data) {
+          const { languages: loadedLanguages, voices: loadedVoices } = response.data;
+          setLanguages(loadedLanguages);
+          setVoices(loadedVoices);
 
-  const mockVoices = [
-    { name: 'English Voice 1', language: 'en-US', gender: 'Female' },
-    { name: 'English Voice 2', language: 'en-US', gender: 'Male' },
-    { name: 'Hindi Voice 1', language: 'hi-IN', gender: 'Female' },
-    { name: 'Spanish Voice 1', language: 'es-ES', gender: 'Male' }
-  ];
+          
+          if (loadedLanguages.length > 0) {
+            setSelectedLanguage(loadedLanguages[0].code);
+            const defaultVoice = loadedVoices.find(v => v.language === loadedLanguages[0].code);
+            if (defaultVoice) setSelectedVoice(defaultVoice.name);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to connect to server:', err);
+        setErrorMessage('Failed to fetch voice catalog. Is the server running on port 5000?');
+      }
+    };
 
-  const handleGenerateSpeech = () => {
+    loadVoices();
+  }, []);
+
+  
+  const handleGenerateSpeech = async () => {
     setErrorMessage('');
     
-    // Front-end validation checks
     if (!text.trim()) {
       setErrorMessage('Please enter some text before generating speech.');
       return;
@@ -45,12 +62,25 @@ function App() {
 
     setIsLoading(true);
 
-    // Simulate backend API latency until Day 8 Node.js setup
-    setTimeout(() => {
-      // Mock generated sample MP3 URL
-      setAudioUrl('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+    try {
+      const response = await generateSpeech({
+        text,
+        language: selectedLanguage,
+        voice: selectedVoice
+      });
+
+      if (response.success && response.data) {
+        setAudioUrl(response.data.audioUrl);
+      } else {
+        setErrorMessage('Failed to generate audio stream.');
+      }
+    } catch (err) {
+      console.error('TTS Generation error:', err);
+      const serverMessage = err.response?.data?.error?.message || 'Server connection error during speech generation.';
+      setErrorMessage(serverMessage);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -62,8 +92,8 @@ function App() {
       <TextInput text={text} setText={setText} maxLength={500} />
 
       <VoiceSelector 
-        languages={mockLanguages}
-        voices={mockVoices}
+        languages={languages}
+        voices={voices}
         selectedLanguage={selectedLanguage}
         setSelectedLanguage={setSelectedLanguage}
         selectedVoice={selectedVoice}
