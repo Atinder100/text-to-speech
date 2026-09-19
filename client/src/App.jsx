@@ -8,19 +8,15 @@ import { fetchVoices, generateSpeech } from './services/api';
 
 function App() {
   const [text, setText] = useState('');
-  
-  
   const [languages, setLanguages] = useState([]);
   const [voices, setVoices] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedVoice, setSelectedVoice] = useState('');
 
-  
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
 
-  
   useEffect(() => {
     const loadVoices = async () => {
       try {
@@ -30,7 +26,6 @@ function App() {
           setLanguages(loadedLanguages);
           setVoices(loadedVoices);
 
-          
           if (loadedLanguages.length > 0) {
             setSelectedLanguage(loadedLanguages[0].code);
             const defaultVoice = loadedVoices.find(v => v.language === loadedLanguages[0].code);
@@ -39,14 +34,13 @@ function App() {
         }
       } catch (err) {
         console.error('Failed to connect to server:', err);
-        setErrorMessage('Failed to fetch voice catalog. Is the server running on port 5000?');
+        setErrorMessage('Failed to fetch voice catalog. Is the backend running on port 5000?');
       }
     };
 
     loadVoices();
   }, []);
 
-  
   const handleGenerateSpeech = async () => {
     setErrorMessage('');
     
@@ -72,12 +66,12 @@ function App() {
       if (response.success && response.data) {
         setAudioUrl(response.data.audioUrl);
       } else {
-        setErrorMessage('Failed to generate audio stream.');
+        setErrorMessage('Failed to generate audio output.');
       }
     } catch (err) {
       console.error('TTS Generation error:', err);
-      const serverMessage = err.response?.data?.error?.message || 'Server connection error during speech generation.';
-      setErrorMessage(serverMessage);
+      const serverMsg = err.response?.data?.error?.message || 'Server error during speech generation.';
+      setErrorMessage(serverMsg);
     } finally {
       setIsLoading(false);
     }

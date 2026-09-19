@@ -9,14 +9,12 @@ function VoiceSelector({
   setSelectedVoice 
 }) {
   
-  // Filter voices based on selected language
   const availableVoices = voices.filter(v => v.language === selectedLanguage);
 
   const handleLanguageChange = (e) => {
     const newLang = e.target.value;
     setSelectedLanguage(newLang);
     
-    // Automatically set voice to the first voice matching the selected language
     const defaultVoice = voices.find(v => v.language === newLang);
     if (defaultVoice) {
       setSelectedVoice(defaultVoice.name);
