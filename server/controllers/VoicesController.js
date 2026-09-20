@@ -1,4 +1,3 @@
-
 const voiceCatalog = {
   languages: [
     { code: 'en-US', name: 'English (US)' },
@@ -9,7 +8,9 @@ const voiceCatalog = {
     { name: 'English Voice 1', language: 'en-US', gender: 'Female' },
     { name: 'English Voice 2', language: 'en-US', gender: 'Male' },
     { name: 'Hindi Voice 1', language: 'hi-IN', gender: 'Female' },
-    { name: 'Spanish Voice 1', language: 'es-ES', gender: 'Male' }
+    { name: 'Hindi Voice 2', language: 'hi-IN', gender: 'Male' },
+    { name: 'Spanish Voice 1', language: 'es-ES', gender: 'Female' },
+    { name: 'Spanish Voice 2', language: 'es-ES', gender: 'Male' }
   ]
 };
 

@@ -78,29 +78,40 @@ function App() {
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '600px', margin: '2rem auto', padding: '1.5rem', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', color: '#2c3e50' }}>Text-to-Speech Application</h1>
-      
-      <ErrorMessage message={errorMessage} onClose={() => setErrorMessage('')} />
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-xl bg-blue-100 rounded-xl shadow-md border border-slate-200 p-6 md:p-8 space-y-6">
+        <header className="text-center border-b border-slate-100 pb-4">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
+            Text-to-Speech Studio
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Convert your prompt into natural audio across multiple languages
+          </p>
+        </header>
+        
+        <ErrorMessage message={errorMessage} onClose={() => setErrorMessage('')} />
 
-      <TextInput text={text} setText={setText} maxLength={500} />
+        <div className="space-y-4">
+          <TextInput text={text} setText={setText} maxLength={500} />
 
-      <VoiceSelector 
-        languages={languages}
-        voices={voices}
-        selectedLanguage={selectedLanguage}
-        setSelectedLanguage={setSelectedLanguage}
-        selectedVoice={selectedVoice}
-        setSelectedVoice={setSelectedVoice}
-      />
+          <VoiceSelector 
+            languages={languages}
+            voices={voices}
+            selectedLanguage={selectedLanguage}
+            setSelectedLanguage={setSelectedLanguage}
+            selectedVoice={selectedVoice}
+            setSelectedVoice={setSelectedVoice}
+          />
 
-      <GenerateButton 
-        onClick={handleGenerateSpeech} 
-        isLoading={isLoading} 
-        disabled={!text.trim() || text.length > 500} 
-      />
+          <GenerateButton 
+            onClick={handleGenerateSpeech} 
+            isLoading={isLoading} 
+            disabled={!text.trim() || text.length > 500} 
+          />
+        </div>
 
-      <AudioPlayer audioUrl={audioUrl} />
+        <AudioPlayer audioUrl={audioUrl} />
+      </div>
     </div>
   );
 }
