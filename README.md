@@ -1,6 +1,7 @@
 1. MULTILINGUAL TEXT-TO-SPEECH (TTS) STUDIO
 
 1.1. Project Introduction
+
 The Multilingual Text-to-Speech Studio is a full-stack MERN application that converts written text into natural audio across multiple languages and dynamic gender voices. Powered by the ElevenLabs neural synthesis engine, the application supports English (US), Hindi (India), and Spanish (Spain). The platform incorporates strict script validation to prevent character-language mismatches, responsive styling, and instant MP3 audio file downloads.
 
 2. USE CASES
